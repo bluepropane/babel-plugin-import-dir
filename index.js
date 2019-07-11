@@ -23,12 +23,10 @@ module.exports = ({ types: t }) => {
         const { node } = path;
         if (node.source.value.endsWith('/*')) {
           const expandedImports = [];
-          console.log('im being triggered');
           const cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
           const srcDir = node.source.value.replace('/*', '');
           const relativePath = pathJoin(cwd, srcDir);
           const modulePaths = getDirs(pathJoin(cwd, srcDir));
-          console.log('wtf', cwd, modulePaths, srcDir);
 
           modulePaths
             .map(modulePathToName)
@@ -60,8 +58,6 @@ module.exports = ({ types: t }) => {
           path.replaceWithMultiple(
             expandedImports.concat([defaultExportObject])
           );
-
-          console.log(transformFromAst(path.parent));
         }
       },
     },

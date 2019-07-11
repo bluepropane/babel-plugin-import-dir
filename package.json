@@ -1,5 +1,5 @@
 {
-  "name": "@babel/plugin-import-dir",
+  "name": "babel-plugin-import-dir",
   "version": "1.1.0",
   "main": "index.js",
   "repository": "https://github.com/bluepropane/babel-plugin-import-dir.git",

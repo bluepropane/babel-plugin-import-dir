@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.2.0...v1.2.1) (2019-07-14)
+
+
+### Bug Fixes
+
+* Add rollup to transpile source, fix wrong package.json "files" field ([7eb01e3](https://github.com/bluepropane/babel-plugin-import-dir/commit/7eb01e3))
+
+
+
 ## [1.2.0](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.1.2...v1.2.0) (2019-07-14)
 
 

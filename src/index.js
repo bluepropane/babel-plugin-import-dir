@@ -1,20 +1,8 @@
 /*
  * Created by liwei.ong on 2019-07-11.
  */
-const fs = require('fs');
-const { transformFromAst } = require('@babel/core');
 const pathJoin = require('path').join;
-
-function modulePathToName(modulePath) {
-  return [modulePath.split('/').slice(-1)[0], modulePath];
-}
-
-function getDirs(path) {
-  return fs
-    .readdirSync(path, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(dir => pathJoin(path, dir.name));
-}
+const utils = require('./utils');
 
 module.exports = ({ types: t }) => {
   return {
@@ -26,10 +14,10 @@ module.exports = ({ types: t }) => {
           const cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
           const srcDir = node.source.value.replace('/*', '');
           const relativePath = pathJoin(cwd, srcDir);
-          const modulePaths = getDirs(pathJoin(cwd, srcDir));
+          const modulePaths = utils.getDirs(pathJoin(cwd, srcDir));
 
           modulePaths
-            .map(modulePathToName)
+            .map(utils.modulePathToName)
             .forEach(([moduleName, modulePath]) => {
               expandedImports.push(
                 t.importDeclaration(
@@ -43,7 +31,7 @@ module.exports = ({ types: t }) => {
             t.variableDeclarator(
               t.identifier(path.node.specifiers[0].local.name),
               t.objectExpression(
-                modulePaths.map(modulePathToName).map(([moduleName]) => {
+                modulePaths.map(utils.modulePathToName).map(([moduleName]) => {
                   return t.objectProperty(
                     t.stringLiteral(moduleName),
                     t.identifier(moduleName),
@@ -52,14 +40,14 @@ module.exports = ({ types: t }) => {
                   );
                 })
               )
-            ),
+            )
           ]);
 
           path.replaceWithMultiple(
             expandedImports.concat([defaultExportObject])
           );
         }
-      },
-    },
+      }
+    }
   };
 };

@@ -51,3 +51,11 @@ import * as modules from './top';
 console.log(modules);
 ```
 
+## Caveats
+
+- Only single-level directory imports are supported.
+This means you can't do something like:
+
+```js
+import modules from './**/*'
+```

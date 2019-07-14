@@ -1,8 +1,8 @@
 /*
  * Created by liwei.ong on 2019-07-11.
  */
+import utils from './utils';
 const pathJoin = require('path').join;
-const utils = require('./utils');
 
 class ImportDeclarationHandler {
   constructor({ path, state, t } = { path: {}, state: {} }) {

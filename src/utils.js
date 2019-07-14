@@ -1,18 +1,31 @@
 const fs = require('fs');
+const pathJoin = require('path').join;
 
-function modulePathToName(modulePath) {
+const utils = {};
+
+utils.modulePathToName = function(modulePath) {
   return [modulePath.split('/').slice(-1)[0], modulePath];
-}
+};
 
-function getDirs(path) {
-  console.log('getting dirs');
+utils.modulePathToInfo = function(modulePath) {
+  return {
+    path: modulePath,
+    name: modulePath.split('/').slice(-1)[0],
+  };
+};
+
+utils.getDirs = function(path) {
   return fs
     .readdirSync(path, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .map(dir => pathJoin(path, dir.name));
-}
-
-module.exports = {
-  modulePathToName,
-  getDirs
 };
+
+utils.getFinalPath = function(path) {
+  return path
+    .split('/')
+    .filter(subPath => subPath !== '')
+    .slice(-1);
+};
+
+module.exports = utils;

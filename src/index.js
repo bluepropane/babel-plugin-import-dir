@@ -4,50 +4,130 @@
 const pathJoin = require('path').join;
 const utils = require('./utils');
 
+class ImportDeclarationHandler {
+  constructor({ path, state, t } = { path: {}, state: {} }) {
+    this.setContext(path, state, t);
+    this.output = [];
+  }
+
+  setContext = (path, state, t) => {
+    const { node } = path;
+    const context = { path, state, t, node };
+    context.cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
+    context.targetDir = pathJoin(
+      context.cwd,
+      node.source.value.replace('/*', '')
+    );
+    const moduleInfo = utils
+      .getDirs(pathJoin(context.cwd, context.targetDir))
+      .map(utils.modulePathToInfo);
+
+    context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {
+      accum[name] = path;
+      return accum;
+    }, {});
+
+    context.importedModuleNames = moduleInfo.reduce((accum, { name }) => {
+      accum[name] = name;
+      return accum;
+    }, {});
+    this.context = context;
+  };
+
+  transformSpecifier = node => {
+    let output;
+    const { importedModuleNames, modulePaths, t } = this.context;
+    if (this.hasDefaultImportSpecifier) {
+      output = t.variableDeclaration('const', [
+        t.variableDeclarator(
+          t.identifier(node.local.name),
+          t.identifier(importedModuleNames[node.local.name])
+        ),
+      ]);
+    } else {
+      output = t.importDeclaration(
+        [
+          t.importDefaultSpecifier(
+            t.identifier(importedModuleNames[node.local.name])
+          ),
+        ],
+        t.stringLiteral(modulePaths[node.local.name])
+      );
+    }
+
+    this.output.push(output);
+  };
+
+  transformDefaultSpecifier = node => {
+    const { importedModuleNames, modulePaths, t } = this.context;
+    const targetImports = [];
+    const exportedName = node.local.name;
+    for (let moduleName in modulePaths) {
+      this.context.importedModuleNames[
+        moduleName
+      ] = `${exportedName}__${importedModuleNames[moduleName]}`;
+      this.output.push(
+        t.importDeclaration(
+          [
+            t.importDefaultSpecifier(
+              t.identifier(importedModuleNames[moduleName])
+            ),
+          ],
+          t.stringLiteral(modulePaths[moduleName])
+        )
+      );
+    }
+  };
+
+  generateDefaultExportObject = () => {
+    const { path, importedModuleNames, t } = this.context;
+    const defaultExportObject = t.variableDeclaration('const', [
+      t.variableDeclarator(
+        t.identifier(path.node.specifiers[0].local.name),
+        t.objectExpression(
+          Object.entries(importedModuleNames).map(
+            ([moduleName, importedModuleName]) => {
+              return t.objectProperty(
+                t.identifier(moduleName),
+                t.identifier(importedModuleName),
+                false,
+                true
+              );
+            }
+          )
+        )
+      ),
+    ]);
+    return defaultExportObject;
+  };
+
+  run() {
+    const { t, node } = this.context;
+    node.specifiers.map(specifierNode => {
+      if (t.isImportDefaultSpecifier(specifierNode)) {
+        this.hasDefaultImportSpecifier = true;
+        this.transformDefaultSpecifier(specifierNode);
+      } else if (t.isImportSpecifier(specifierNode)) {
+        this.transformSpecifier(specifierNode);
+      }
+    });
+    if (this.hasDefaultImportSpecifier) {
+      this.output.push(this.generateDefaultExportObject());
+    }
+  }
+}
+
 module.exports = ({ types: t }) => {
   return {
     visitor: {
       ImportDeclaration(path, state) {
         const { node } = path;
-        if (node.source.value.endsWith('/*')) {
-          const expandedImports = [];
-          const cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
-          const srcDir = node.source.value.replace('/*', '');
-          const relativePath = pathJoin(cwd, srcDir);
-          const modulePaths = utils.getDirs(pathJoin(cwd, srcDir));
-
-          modulePaths
-            .map(utils.modulePathToName)
-            .forEach(([moduleName, modulePath]) => {
-              expandedImports.push(
-                t.importDeclaration(
-                  [t.importDefaultSpecifier(t.identifier(moduleName))],
-                  t.stringLiteral(modulePath)
-                )
-              );
-            });
-
-          const defaultExportObject = t.variableDeclaration('const', [
-            t.variableDeclarator(
-              t.identifier(path.node.specifiers[0].local.name),
-              t.objectExpression(
-                modulePaths.map(utils.modulePathToName).map(([moduleName]) => {
-                  return t.objectProperty(
-                    t.stringLiteral(moduleName),
-                    t.identifier(moduleName),
-                    false,
-                    true
-                  );
-                })
-              )
-            )
-          ]);
-
-          path.replaceWithMultiple(
-            expandedImports.concat([defaultExportObject])
-          );
+        if (utils.getFinalPath(node.source.value).includes('*')) {
+          const h = new ImportDeclarationHandler({ path, state, t });
+          h.run();
+          path.replaceWithMultiple(h.output);
         }
-      }
-    }
+      },
+    },
   };
 };

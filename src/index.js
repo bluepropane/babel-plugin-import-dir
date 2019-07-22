@@ -19,7 +19,7 @@ class ImportDeclarationHandler {
       node.source.value.replace('/*', '')
     );
     const moduleInfo = utils
-      .getDirs(pathJoin(context.cwd, context.targetDir))
+      .getDirs(context.targetDir)
       .map(utils.modulePathToInfo);
 
     context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {

@@ -6,6 +6,7 @@
   "author": "Ryan Blue<bluepropane@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "precommit": "yarn build && git add dist/",
     "commit": "git-cz",
     "release": "standard-version",
     "build": "rollup -c",

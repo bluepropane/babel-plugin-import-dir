@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-import-dir",
   "version": "1.2.1",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/bluepropane/babel-plugin-import-dir.git",
   "author": "Ryan Blue<bluepropane@gmail.com>",
   "license": "MIT",

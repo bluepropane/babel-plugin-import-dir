@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.6](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.2.5...v1.2.6) (2019-07-23)
+
+
+### Bug Fixes
+
+* Fix import resolution for src files ([fec95ed](https://github.com/bluepropane/babel-plugin-import-dir/commit/fec95ed))
+
+
+### Tests
+
+* Update test cases for kebabcase import ([c819de3](https://github.com/bluepropane/babel-plugin-import-dir/commit/c819de3))
+
+
+
 ### [1.2.5](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.2.1...v1.2.5) (2019-07-23)
 
 

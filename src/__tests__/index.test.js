@@ -4,16 +4,9 @@ const fs = require('fs');
 const { transformFileAsync } = require('@babel/core');
 const prettier = require('prettier');
 const prettierOptions = require('../../prettier.config.js');
+const utils = require('../utils');
 
-jest.mock('../utils', () => {
-  const actualUtils = jest.requireActual('../utils');
-  return {
-    ...actualUtils,
-    getDirs() {
-      return ['./a', './b'];
-    },
-  };
-});
+const mockGetDir = jest.spyOn(utils, 'getDirs');
 
 async function useFixture(fixtureName) {
   const fixturePath = path.join(__dirname, `/fixtures/${fixtureName}`);
@@ -32,8 +25,23 @@ async function useFixture(fixtureName) {
 }
 
 describe('babel-plugin-import-dir', () => {
+  beforeEach(() => {
+    // reset default behaviour for getDir
+    mockGetDir.mockImplementation(() => {
+      return ['./a', './b'];
+    });
+  });
+
   it('default import', async () => {
     const { output, expected } = await useFixture('default-import');
+    expect(output).toEqual(expected);
+  });
+
+  it('default import with kebabcased directories', async () => {
+    mockGetDir.mockImplementation(() => {
+      return ['./a-a', './b'];
+    });
+    const { output, expected } = await useFixture('kebabcase-import');
     expect(output).toEqual(expected);
   });
 

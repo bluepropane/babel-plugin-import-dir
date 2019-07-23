@@ -1,7 +1,7 @@
 /*
  * Created by liwei.ong on 2019-07-11.
  */
-import utils from './utils';
+const utils = require('./utils');
 const pathJoin = require('path').join;
 
 class ImportDeclarationHandler {

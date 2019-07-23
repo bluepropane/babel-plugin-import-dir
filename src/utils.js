@@ -28,4 +28,4 @@ utils.getFinalPath = function(path) {
     .slice(-1);
 };
 
-export default utils;
+module.exports = utils;

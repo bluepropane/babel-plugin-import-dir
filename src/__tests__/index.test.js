@@ -5,15 +5,15 @@ const { transformFileAsync } = require('@babel/core');
 const prettier = require('prettier');
 const prettierOptions = require('../../prettier.config.js');
 
-// jest.mock('../utils', () => {
-//   const actualUtils = jest.requireActual('../utils');
-//   return {
-//     ...actualUtils,
-//     getDirs() {
-//       return ['./a', './b'];
-//     },
-//   };
-// });
+jest.mock('../utils', () => {
+  const actualUtils = jest.requireActual('../utils');
+  return {
+    ...actualUtils,
+    getDirs() {
+      return ['./a', './b'];
+    },
+  };
+});
 
 async function useFixture(fixtureName) {
   const fixturePath = path.join(__dirname, `/fixtures/${fixtureName}`);

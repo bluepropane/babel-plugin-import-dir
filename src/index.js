@@ -1,7 +1,7 @@
 /*
  * Created by liwei.ong on 2019-07-11.
  */
-const utils = require('utils');
+import utils from 'utils';
 const pathJoin = require('path').join;
 const camelCase = require('lodash.camelcase');
 

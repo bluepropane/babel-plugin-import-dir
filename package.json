@@ -11,7 +11,8 @@
     "release": "standard-version",
     "build": "rollup -c",
     "dev": "NODE_ENV=development rollup -c -w",
-    "test": "jest src/"
+    "test": "jest src/",
+    "publish": "git push --follow-tags origin master && npm publish"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.0",

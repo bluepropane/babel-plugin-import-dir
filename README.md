@@ -1,6 +1,6 @@
 # babel-plugin-import-dir
 
-Babel plugin to allow importing all modules in subdirectories of a folder. Supports babel >= 7.
+Babel plugin to allow importing all modules in subdirectories of a folder. Zero configuration. Supports babel >= 7.
 
 
 ## Usage
@@ -85,3 +85,5 @@ This means you can't do something like:
 ```js
 import modules from './**/*'
 ```
+
+- If you are running a file watcher (e.g. watchman, nodemon) in development, changes to directory names might not be picked up by babel. If this happens, restarting your development script should do the trick.

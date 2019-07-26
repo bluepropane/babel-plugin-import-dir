@@ -1,6 +1,3 @@
-/*
- * Created by liwei.ong on 2019-07-11.
- */
 const utils = require('./utils');
 const pathJoin = require('path').join;
 

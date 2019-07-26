@@ -12,6 +12,7 @@ Enable the plugin in `.babelrc`:
 }
 ```
 
+#### Basic example
 Let's say you have such a folder structure, and wish to export `a`, `b` and `c` from `top/index.js`:
 ```
 top/
@@ -49,6 +50,31 @@ You can now use it in another file:
 import * as modules from './top';
 
 console.log(modules);
+```
+
+#### Import directly from `top/`:
+```js
+import modules from './top/*';
+
+console.log(modules);  // {a: <module 'a'>, b: <mobule 'b'>, c: <module 'c'>}
+```
+
+
+#### Directories with kebab-cased names will be converted into camelCase
+```
+top/
+- kebab-case/
+  - index.js
+- b/
+  - index.js
+- c/
+  - index.js
+index.js
+```
+```js
+import modules from './top/*'
+
+console.log(modules);  // {kebabCase: <module 'kebab-case'>, b: <mobule 'b'>, c: <module 'c'>}
 ```
 
 ## Caveats

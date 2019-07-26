@@ -1,5 +1,6 @@
-const utils = require('./utils');
+import utils from 'utils';
 const pathJoin = require('path').join;
+const camelCase = require('lodash.camelcase');
 
 class ImportDeclarationHandler {
   constructor({ path, state, t } = { path: {}, state: {} }) {
@@ -25,7 +26,7 @@ class ImportDeclarationHandler {
     }, {});
 
     context.importedModuleNames = moduleInfo.reduce((accum, { name }) => {
-      accum[name] = name;
+      accum[name] = camelCase(name);
       return accum;
     }, {});
     this.context = context;
@@ -85,7 +86,7 @@ class ImportDeclarationHandler {
           Object.entries(importedModuleNames).map(
             ([moduleName, importedModuleName]) => {
               return t.objectProperty(
-                t.identifier(moduleName),
+                t.identifier(camelCase(moduleName)),
                 t.identifier(importedModuleName),
                 false,
                 true

@@ -13,9 +13,12 @@ export default {
   },
   plugins: [
     babel({
-      exclude: 'node_modules/**', // only transpile our source code
+      extends: './.babelrc',
+      exclude: 'node_modules/**',
     }),
-    resolve(),
+    resolve({
+      preferBuiltins: true,
+    }),
     commonjs(),
     !__DEV__ && terser(),
   ],

@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-import-dir",
-  "version": "1.2.4",
+  "version": "1.2.8",
   "main": "dist/index.js",
   "repository": "https://github.com/bluepropane/babel-plugin-import-dir.git",
   "author": "Ryan Blue<bluepropane@gmail.com>",
@@ -11,11 +11,13 @@
     "release": "standard-version",
     "build": "rollup -c",
     "dev": "NODE_ENV=development rollup -c -w",
-    "test": "jest src/"
+    "test": "jest src/",
+    "publish": "git push --follow-tags origin master && npm publish"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.0",
     "babel-eslint": "^10.0.2",
+    "babel-plugin-module-resolver": "^3.2.0",
     "cz-conventional-changelog": "2.1.0",
     "eslint": "^6.0.1",
     "eslint-plugin-jest": "^22.7.2",
@@ -47,5 +49,8 @@
     "babel-plugin-import-directory",
     "multiple-import",
     "dynamic-imports"
-  ]
+  ],
+  "dependencies": {
+    "lodash.camelcase": "^4.3.0"
+  }
 }

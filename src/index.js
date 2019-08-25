@@ -1,4 +1,4 @@
-import utils from 'utils';
+const utils = require('./utils');
 const pathJoin = require('path').join;
 const camelCase = require('lodash.camelcase');
 
@@ -25,8 +25,8 @@ class ImportDeclarationHandler {
       return accum;
     }, {});
 
-    context.importedModuleNames = moduleInfo.reduce((accum, { name }) => {
-      accum[name] = camelCase(name);
+    context.importedModuleIdentifiers = moduleInfo.reduce((accum, { name }) => {
+      accum[name] = path.scope.generateUidIdentifier(name);
       return accum;
     }, {});
     this.context = context;
@@ -34,21 +34,17 @@ class ImportDeclarationHandler {
 
   transformSpecifier = node => {
     let output;
-    const { importedModuleNames, modulePaths, t } = this.context;
+    const { importedModuleIdentifiers, modulePaths, t } = this.context;
     if (this.hasDefaultImportSpecifier) {
       output = t.variableDeclaration('const', [
         t.variableDeclarator(
           t.identifier(node.local.name),
-          t.identifier(importedModuleNames[node.local.name])
+          importedModuleIdentifiers[node.local.name]
         ),
       ]);
     } else {
       output = t.importDeclaration(
-        [
-          t.importDefaultSpecifier(
-            t.identifier(importedModuleNames[node.local.name])
-          ),
-        ],
+        [t.importDefaultSpecifier(t.identifier(node.local.name))],
         t.stringLiteral(modulePaths[node.local.name])
       );
     }
@@ -57,20 +53,13 @@ class ImportDeclarationHandler {
   };
 
   transformDefaultSpecifier = node => {
-    const { importedModuleNames, modulePaths, t } = this.context;
+    const { importedModuleIdentifiers, modulePaths, t, path } = this.context;
     const targetImports = [];
     const exportedName = node.local.name;
     for (let moduleName in modulePaths) {
-      this.context.importedModuleNames[
-        moduleName
-      ] = `${exportedName}__${importedModuleNames[moduleName]}`;
       this.output.push(
         t.importDeclaration(
-          [
-            t.importDefaultSpecifier(
-              t.identifier(importedModuleNames[moduleName])
-            ),
-          ],
+          [t.importDefaultSpecifier(importedModuleIdentifiers[moduleName])],
           t.stringLiteral(modulePaths[moduleName])
         )
       );
@@ -78,16 +67,16 @@ class ImportDeclarationHandler {
   };
 
   generateDefaultExportObject = () => {
-    const { path, importedModuleNames, t } = this.context;
+    const { path, importedModuleIdentifiers, t } = this.context;
     const defaultExportObject = t.variableDeclaration('const', [
       t.variableDeclarator(
         t.identifier(path.node.specifiers[0].local.name),
         t.objectExpression(
-          Object.entries(importedModuleNames).map(
-            ([moduleName, importedModuleName]) => {
+          Object.entries(importedModuleIdentifiers).map(
+            ([moduleName, importedModuleId]) => {
               return t.objectProperty(
                 t.identifier(camelCase(moduleName)),
-                t.identifier(importedModuleName),
+                importedModuleId,
                 false,
                 true
               );

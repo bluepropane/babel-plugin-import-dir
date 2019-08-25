@@ -1,6 +1,6 @@
-import test__aA from './a-a';
-import test__b from './b';
+import _aA from './a-a';
+import _b from './b';
 const test = {
-  aA: test__aA,
-  b: test__b,
+  aA: _aA,
+  b: _b,
 };

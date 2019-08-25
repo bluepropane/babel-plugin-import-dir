@@ -1,7 +1,7 @@
-import all__a from './a';
-import all__b from './b';
-const a = all__a;
+import _a from './a';
+import _b from './b';
+const a = _a;
 const all = {
-  a: all__a,
-  b: all__b,
+  a: _a,
+  b: _b,
 };

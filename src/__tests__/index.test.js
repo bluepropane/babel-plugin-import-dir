@@ -6,7 +6,7 @@ const prettier = require('prettier');
 const prettierOptions = require('../../prettier.config.js');
 const utils = require('../utils');
 
-const mockGetDir = jest.spyOn(utils, 'getDirs');
+const mockGetDir = jest.spyOn(utils, 'getModulesFromPattern');
 
 async function useFixture(fixtureName) {
   const fixturePath = path.join(__dirname, `/fixtures/${fixtureName}`);

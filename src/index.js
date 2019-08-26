@@ -12,12 +12,9 @@ class ImportDeclarationHandler {
     const { node } = path;
     const context = { path, state, t, node };
     context.cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
-    context.targetDir = pathJoin(
-      context.cwd,
-      node.source.value.replace('/*', '')
-    );
+    context.targetPattern = pathJoin(context.cwd, node.source.value);
     const moduleInfo = utils
-      .getDirs(context.targetDir)
+      .getModulesFromPattern(context.targetPattern)
       .map(utils.modulePathToInfo);
 
     context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {

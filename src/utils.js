@@ -1,6 +1,8 @@
 const fs = require('fs');
 const pathJoin = require('path').join;
+const glob = require('glob');
 
+const MATCH_MODULE_FILES = /\.(js|jsx|ts)$/g;
 const utils = {};
 
 utils.modulePathToName = function(modulePath) {
@@ -14,11 +16,22 @@ utils.modulePathToInfo = function(modulePath) {
   };
 };
 
-utils.getDirs = function(path) {
-  return fs
-    .readdirSync(path, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(dir => pathJoin(path, dir.name));
+utils.getModulesFromPattern = async function(pattern) {
+  const dirs = await new Promise(res => {
+    glob(pattern, { mark: true }, (err, matches) => {
+      res(matches);
+    });
+  });
+  return dirs
+    .filter(mod => MATCH_MODULE_FILES.exec(mod) || mod.endsWith('/'))
+    .map(mod => {
+      if (mod.endsWith('/')) {
+        mod = mod.slice(0, -1);
+      } else {
+        mod = mod.replace(MATCH_MODULE_FILES, '');
+      }
+      return mod;
+    });
 };
 
 utils.getFinalPath = function(path) {

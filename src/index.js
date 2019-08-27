@@ -17,6 +17,8 @@ class ImportDeclarationHandler {
       .getModulesFromPattern(context.targetPattern)
       .map(utils.modulePathToInfo);
 
+    console.log('hi', moduleInfo);
+
     context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {
       accum[name] = path;
       return accum;

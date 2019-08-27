@@ -5,11 +5,9 @@ const utils = require('../utils');
 const path = require('path');
 
 describe('utils.getModulesFromPattern', () => {
-  test('basic wildcard *', async () => {
+  test('basic wildcard *', () => {
     const targetDir = path.join(__dirname, './fixtures/test-dir');
-    await expect(
-      utils.getModulesFromPattern(path.join(targetDir, '*'))
-    ).resolves.toEqual(
+    expect(utils.getModulesFromPattern(path.join(targetDir, '*'))).toEqual(
       ['a', 'b', 'c'].map(submodule => path.join(targetDir, submodule))
     );
   });

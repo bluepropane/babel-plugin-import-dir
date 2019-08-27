@@ -16,12 +16,8 @@ utils.modulePathToInfo = function(modulePath) {
   };
 };
 
-utils.getModulesFromPattern = async function(pattern) {
-  const dirs = await new Promise(res => {
-    glob(pattern, { mark: true }, (err, matches) => {
-      res(matches);
-    });
-  });
+utils.getModulesFromPattern = function(pattern) {
+  const dirs = glob.sync(pattern, { mark: true });
   return dirs
     .filter(mod => MATCH_MODULE_FILES.exec(mod) || mod.endsWith('/'))
     .map(mod => {

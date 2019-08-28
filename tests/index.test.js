@@ -25,4 +25,9 @@ describe('babel-plugin-import-dir', () => {
     const { output, expected } = await useFixture('mixed-imports');
     expect(output).toEqual(expected);
   });
+
+  test('filtered by glob', async () => {
+    const { output, expected } = await useFixture('glob-filter');
+    expect(output).toEqual(expected);
+  });
 });

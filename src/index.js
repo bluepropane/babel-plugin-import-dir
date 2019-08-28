@@ -1,6 +1,6 @@
 import utils from './utils';
+import camelCase from 'lodash.camelcase';
 const pathJoin = require('path').join;
-const camelCase = require('lodash.camelcase');
 
 class ImportDeclarationHandler {
   constructor({ path, state, t } = { path: {}, state: {} }) {
@@ -12,16 +12,10 @@ class ImportDeclarationHandler {
     const { node } = path;
     const context = { path, state, t, node };
     context.cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
-    context.targetPattern = pathJoin(node.source.value);
+    context.targetPattern = node.source.value;
     const moduleInfo = utils
       .getModulesFromPattern(context.targetPattern, context.cwd)
       .map(utils.modulePathToInfo);
-
-    if (node.source.value.startsWith('./')) {
-      utils.prependDotSlash(moduleInfo);
-    }
-
-    console.log('hi', context.targetPattern, moduleInfo);
 
     context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {
       accum[name] = path;
@@ -112,7 +106,7 @@ module.exports = ({ types: t }) => {
     visitor: {
       ImportDeclaration(path, state) {
         const { node } = path;
-        if (utils.getFinalPath(node.source.value).includes('*')) {
+        if ((utils.getFinalPath(node.source.value)[0] || []).includes('*')) {
           const h = new ImportDeclarationHandler({ path, state, t });
           h.run();
           path.replaceWithMultiple(h.output);

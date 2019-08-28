@@ -1,26 +1,4 @@
-const plugin = require('../index');
-const path = require('path');
-const fs = require('fs');
-const { transformFileAsync } = require('@babel/core');
-const prettier = require('prettier');
-const prettierOptions = require('../../prettier.config.js');
-const utils = require('../utils');
-
-async function useFixture(fixtureName) {
-  const fixturePath = path.join(__dirname, `/fixtures/${fixtureName}`);
-  const expected = await new Promise(res =>
-    fs.readFile(path.join(fixturePath, 'output.js'), (err, data) =>
-      res(data.toString())
-    )
-  );
-
-  return {
-    output: await transformFileAsync(path.join(fixturePath, 'code.js'), {
-      plugins: [plugin],
-    }).then(res => prettier.format(res.code, prettierOptions)),
-    expected,
-  };
-}
+import { useFixture } from './testUtils';
 
 describe('babel-plugin-import-dir', () => {
   test('default import', async () => {

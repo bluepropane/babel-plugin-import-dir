@@ -16,8 +16,8 @@ utils.modulePathToInfo = function(modulePath) {
   };
 };
 
-utils.getModulesFromPattern = function(pattern) {
-  const dirs = glob.sync(pattern, { mark: true });
+utils.getModulesFromPattern = function(pattern, cwd) {
+  const dirs = glob.sync(pattern, { mark: true, cwd });
   return dirs
     .filter(mod => MATCH_MODULE_FILES.exec(mod) || mod.endsWith('/'))
     .map(mod => {
@@ -35,6 +35,14 @@ utils.getFinalPath = function(path) {
     .split('/')
     .filter(subPath => subPath !== '')
     .slice(-1);
+};
+
+utils.prependDotSlash = function(moduleInfo) {
+  moduleInfo.forEach(mod => {
+    if (!mod.path.startsWith('./')) {
+      mod.path = './' + mod.path;
+    }
+  });
 };
 
 module.exports = utils;

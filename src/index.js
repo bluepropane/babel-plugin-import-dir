@@ -1,4 +1,4 @@
-const utils = require('./utils');
+import utils from './utils';
 const pathJoin = require('path').join;
 const camelCase = require('lodash.camelcase');
 
@@ -12,12 +12,16 @@ class ImportDeclarationHandler {
     const { node } = path;
     const context = { path, state, t, node };
     context.cwd = state.file.opts.filename.replace(/(.*)\/[\w-.]+$/, '$1');
-    context.targetPattern = pathJoin(context.cwd, node.source.value);
+    context.targetPattern = pathJoin(node.source.value);
     const moduleInfo = utils
-      .getModulesFromPattern(context.targetPattern)
+      .getModulesFromPattern(context.targetPattern, context.cwd)
       .map(utils.modulePathToInfo);
 
-    console.log('hi', moduleInfo);
+    if (node.source.value.startsWith('./')) {
+      utils.prependDotSlash(moduleInfo);
+    }
+
+    console.log('hi', context.targetPattern, moduleInfo);
 
     context.modulePaths = moduleInfo.reduce((accum, { path, name }) => {
       accum[name] = path;

@@ -11,11 +11,14 @@
     "release": "standard-version",
     "build": "rollup -c",
     "dev": "NODE_ENV=development rollup -c -w",
-    "test": "jest src/",
+    "test": "BABEL_ENV=test jest tests/",
     "publish": "git push --follow-tags origin master && npm publish"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
     "babel-eslint": "^10.0.2",
     "babel-plugin-module-resolver": "^3.2.0",
     "cz-conventional-changelog": "2.1.0",

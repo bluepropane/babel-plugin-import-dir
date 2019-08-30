@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.2.9...v2.0.0) (2019-08-30)
+
+
+### Bug Fixes
+
+* Fix glob filter not working for patterns other than *, some refactoring ([a88980d](https://github.com/bluepropane/babel-plugin-import-dir/commit/a88980d))
+* **eslint-utils:** Upgrade vulnerable dependency ([12702eb](https://github.com/bluepropane/babel-plugin-import-dir/commit/12702eb))
+* Use sync execution because of babel traversal ([93ff0a2](https://github.com/bluepropane/babel-plugin-import-dir/commit/93ff0a2))
+
+
+### Features
+
+* Configure module resolver for both test and build, use glob for path resolution ([354e712](https://github.com/bluepropane/babel-plugin-import-dir/commit/354e712))
+* Use actual glob patterns for module resolution instead of fs ([2519cb0](https://github.com/bluepropane/babel-plugin-import-dir/commit/2519cb0))
+
+
+### BREAKING CHANGES
+
+* wildcard imports actually follow the behaviour of the node glob module now
+
+
+
 ### [1.2.9](https://github.com/bluepropane/babel-plugin-import-dir/compare/v1.2.8...v1.2.9) (2019-07-26)
 
 
